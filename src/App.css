@@ -45,3 +45,19 @@
   font-size: 1.4em;
   font-weight: bold;
 }
+.prompt {
+  font-size: 1.2em;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-40 {
+  margin-top: 40px;
+}
+.code-buttons{
+  text-align: right;
+  margin-bottom: 5px;
+}
+.ml-5 {
+  margin-left: 5px;
+}

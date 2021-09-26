@@ -1,34 +1,19 @@
 import './App.css';
-import React, { Component } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Week38 from './pages/2021/Week38';
 
-export class App extends Component {
-  array = ['a', 'a', 'c', 'd', 'c', 'e', 'e', 'g', 'g', 'f'];
-  map = {};
-  firstNonRepeat = function () {
-    for (var i = 0; i < this.array.length; i++) {
-      if (this.array[i] in this.map) this.map[this.array[i]]++;
-      else this.map[this.array[i]] = 1;
-    }
-    for (let j = 0; j < this.array.length; j++) {
-      if (this.map[this.array[j]] === 1) return this.array[j];
-    }
-  };
-  render() {
-    return (
-      <div className='container'>
-        <h1>Sample Input</h1>
-        <div className='row sample'>[ {this.array.toString()} ]</div>
-        <div className='row'>
-          {this.array.map((e, index) => (
-            <div key={index} className='box col'>
-              {e.toUpperCase()}
-            </div>
-          ))}
-        </div>
-        <div className='answer row'>{this.firstNonRepeat()}</div>
-      </div>
-    );
-  }
+export default function App() {
+  return (
+    <Router>
+      <Switch>
+        <Route path='/2021/week38'>
+          <Week38 />
+        </Route>
+        <Route path='*'>
+          <Week38 />
+        </Route>
+      </Switch>
+    </Router>
+  );
 }
-
-export default App;
