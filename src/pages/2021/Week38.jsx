@@ -1,5 +1,6 @@
 import { React, useState } from 'react';
-import { CodeBlock, CopyBlock, dracula } from 'react-code-blocks';
+import { CopyBlock, dracula } from 'react-code-blocks';
+import * as styles from '../../styles/week38.module.css';
 
 const Week38 = () => {
   const array = ['a', 'a', 'c', 'd', 'c', 'e', 'e', 'g', 'g', 'f'];
@@ -49,19 +50,44 @@ const Week38 = () => {
     language: 'java',
   };
   const [currentCode, setCurrentCode] = useState(cppCode);
+  const [currentIndex, setCurrentIndex] = useState(NaN);
+  const [currentKey, setCurrentKey] = useState(' ');
   const [map, setMap] = useState({});
+  const [showMap, setShowMap] = useState(false);
+  const [running, setRunning] = useState(false);
+  let found = false;
   const firstNonRepeat = function () {
+    const temp = {};
+    setCurrentKey(-1);
+    setRunning(true);
     for (let i = 0; i < array.length; i++) {
-      if (array[i] in map) map[array[i]]++;
-      else map[array[i]] = 1;
-      setMap(map);
+      setTimeout(() => {
+        if (array[i] in temp) temp[array[i]]++;
+        else temp[array[i]] = 1;
+        setMap(temp);
+        setCurrentIndex(i);
+      }, 2000 * i);
     }
-    for (let j = 0; j < array.length; j++) {
-      if (map[array[j]] === 1) return array[j];
-    }
+    setTimeout(() => {
+      for (let j = 0; j < array.length; j++) {
+        // eslint-disable-next-line no-loop-func
+        setTimeout(() => {
+          if (!found) {
+            setCurrentIndex(j);
+            setCurrentKey(array[j]);
+          }
+          if (temp[array[j]] === 1) {
+            setRunning(false);
+            found = true;
+            return array[j];
+          }
+          if (j === array.length - 1) setRunning(false);
+        }, 2000 * j);
+      }
+    }, 2000 * array.length + 20);
   };
   return (
-    <div className='container'>
+    <div className='container main'>
       <h1>Prompt</h1>
       <div className='prompt'>
         Given an array of characters find the first nonrepeating charater in
@@ -133,13 +159,63 @@ const Week38 = () => {
         />
       </div>
       <h1 className='mt-40'>How It Works</h1>
-      <div className='row '>
-        {array.map((e, index) => (
-          <div key={index} className='box col'>
-            {e.toUpperCase()}
+      {showMap ? (
+        <div className={styles.minHeight}>
+          <h4 className='mt-10'>Array</h4>
+          <div className='row'>
+            {array.map((e, index) => (
+              <div key={index} className='col'>
+                <div className={styles.relative}>
+                  <div className={styles.arrow}></div>
+                </div>
+                <div
+                  className={
+                    index === currentIndex ? styles.active + ' box ' : 'box col'
+                  }
+                >
+                  {e.toUpperCase()}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <h4 className='mt-10'>Dictionary</h4>
+          <div className='row'>
+            {Object.keys(map).map((e, index) => {
+              return (
+                <div className='col'>
+                  <div className='box'>{e.toUpperCase()}</div>
+                  <div
+                    className={
+                      currentKey === e ? styles.active + ' box' : 'box'
+                    }
+                  >
+                    {map[e]}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <button
+            className='btn btn-primary mt-40'
+            disabled={running}
+            onClick={() => firstNonRepeat()}
+          >
+            Run Again
+          </button>
+        </div>
+      ) : (
+        <button
+          className='btn btn-primary'
+          onClick={() => {
+            setShowMap(true);
+            setTimeout(() => {
+              firstNonRepeat();
+            }, 2000);
+          }}
+        >
+          Show Me
+        </button>
+      )}
     </div>
   );
 };

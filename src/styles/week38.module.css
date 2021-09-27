@@ -1,0 +1,9 @@
+.active {
+  color: red
+}
+.relative {
+    position: relative;
+}
+.minHeight{
+    min-height: 20vh;
+}
