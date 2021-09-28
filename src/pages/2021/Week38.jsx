@@ -1,9 +1,10 @@
 import { React, useState } from 'react';
 import { CopyBlock, dracula } from 'react-code-blocks';
 import * as styles from '../../styles/week38.module.css';
+import { ToggleButton, ToggleButtonGroup, Box } from '@mui/material';
 
 const Week38 = () => {
-  const array = ['a', 'a', 'c', 'd', 'c', 'e', 'e', 'g', 'g', 'f'];
+  const [array, setArray] = useState(['a', 'a', 'c', 'd', 'c', 'e', 'e', 'g']);
   const mapped = array.map((y) => "'" + y + "'");
   const cppCode = {
     code: `char findNonrepeator(char ar[], int size){
@@ -50,38 +51,73 @@ const Week38 = () => {
     language: 'java',
   };
   const [currentCode, setCurrentCode] = useState(cppCode);
+  const [currentCodeDisplay, setCurrentCodeDisplay] = useState('cpp');
   const [currentIndex, setCurrentIndex] = useState(NaN);
   const [currentKey, setCurrentKey] = useState(' ');
   const [map, setMap] = useState({});
   const [showMap, setShowMap] = useState(false);
   const [running, setRunning] = useState(false);
+  const [displayError, setDisplayError] = useState(false);
   let found = false;
+  const codeTypes = ['cpp', 'java', 'python'];
+  const handleArrayChange = (e, index) => {
+    if (!e.search(/[^a-zA-Z]+/)) {
+      return;
+    }
+    const temp = [...array];
+    temp[index] = e.toLowerCase();
+    setArray(temp);
+  };
+  const handleCodeChange = (event, newCode) => {
+    if (newCode === 'java') {
+      setCurrentCode(javaCode);
+      setCurrentCodeDisplay('java');
+    }
+    if (newCode === 'cpp') {
+      setCurrentCode(cppCode);
+      setCurrentCodeDisplay('cpp');
+    }
+    if (newCode === 'python') {
+      setCurrentCode(pythonCode);
+      setCurrentCodeDisplay('python');
+    }
+  };
   const firstNonRepeat = function () {
     const temp = {};
-    setCurrentKey(-1);
+    setDisplayError(false);
     setRunning(true);
-    for (let i = 0; i < array.length; i++) {
+    setCurrentKey(-1);
+    const loopArray = array.map((y) => (y === '' ? 'a' : y));
+    if (array.includes('')) {
+      setArray(loopArray);
+    }
+    for (let i = 0; i < loopArray.length; i++) {
       setTimeout(() => {
-        if (array[i] in temp) temp[array[i]]++;
-        else temp[array[i]] = 1;
+        if (loopArray[i] in temp) temp[loopArray[i]]++;
+        else temp[loopArray[i]] = 1;
         setMap(temp);
         setCurrentIndex(i);
+        setCurrentKey(loopArray[i]);
       }, 2000 * i);
     }
     setTimeout(() => {
-      for (let j = 0; j < array.length; j++) {
+      for (let j = 0; j < loopArray.length; j++) {
         // eslint-disable-next-line no-loop-func
         setTimeout(() => {
           if (!found) {
             setCurrentIndex(j);
-            setCurrentKey(array[j]);
+            setCurrentKey(loopArray[j]);
           }
-          if (temp[array[j]] === 1) {
+          if (temp[loopArray[j]] === 1) {
             setRunning(false);
             found = true;
-            return array[j];
+            return loopArray[j];
           }
-          if (j === array.length - 1) setRunning(false);
+          if (j === loopArray.length - 1) {
+            setRunning(false);
+            setDisplayError(true);
+            setCurrentKey('1');
+          }
         }, 2000 * j);
       }
     }, 2000 * array.length + 20);
@@ -128,29 +164,17 @@ const Week38 = () => {
       </div>
       <div className='row mt-10'>
         <h1>Code</h1>
-        <div className='code-buttons'>
-          <button
-            type='button'
-            className='btn btn-primary ml-5'
-            onClick={() => setCurrentCode(cppCode)}
-          >
-            c++
-          </button>
-          <button
-            type='button'
-            className='btn btn-primary ml-5'
-            onClick={() => setCurrentCode(javaCode)}
-          >
-            java
-          </button>
-          <button
-            type='button'
-            className='btn btn-primary ml-5'
-            onClick={() => setCurrentCode(pythonCode)}
-          >
-            python
-          </button>
-        </div>
+        <ToggleButtonGroup
+          color='primary'
+          exclusive
+          sx={{ marginBottom: '5px', marginLeft: 'auto', marginRight: '0px' }}
+          value={currentCodeDisplay}
+          onChange={handleCodeChange}
+        >
+          <ToggleButton value='cpp'>CPP</ToggleButton>
+          <ToggleButton value='java'>Java</ToggleButton>
+          <ToggleButton value='python'>Python</ToggleButton>
+        </ToggleButtonGroup>
         <div className='row code-options'></div>
         <CopyBlock
           text={currentCode.code}
@@ -165,16 +189,16 @@ const Week38 = () => {
           <div className='row'>
             {array.map((e, index) => (
               <div key={index} className='col'>
-                <div className={styles.relative}>
-                  <div className={styles.arrow}></div>
-                </div>
-                <div
+                <input
                   className={
-                    index === currentIndex ? styles.active + ' box ' : 'box col'
+                    index === currentIndex && !displayError
+                      ? `${styles.active} box array`
+                      : 'box array col'
                   }
-                >
-                  {e.toUpperCase()}
-                </div>
+                  disabled={running}
+                  value={e.toUpperCase()}
+                  onChange={(e) => handleArrayChange(e.target.value, index)}
+                ></input>
               </div>
             ))}
           </div>
@@ -182,11 +206,11 @@ const Week38 = () => {
           <div className='row'>
             {Object.keys(map).map((e, index) => {
               return (
-                <div className='col'>
+                <div className='col' key={index}>
                   <div className='box'>{e.toUpperCase()}</div>
                   <div
                     className={
-                      currentKey === e ? styles.active + ' box' : 'box'
+                      currentKey === e ? `${styles.activeKey} box` : 'box'
                     }
                   >
                     {map[e]}
@@ -195,8 +219,18 @@ const Week38 = () => {
               );
             })}
           </div>
+          <div
+            className={
+              displayError ? `mt-10 ${styles.activeKey} text-large` : `hidden`
+            }
+          >
+            No Result Found
+          </div>
+          <div className=' mt-40'>
+            Try changing the array and see how it effects the algorithm
+          </div>
           <button
-            className='btn btn-primary mt-40'
+            className='btn btn-primary mt-10'
             disabled={running}
             onClick={() => firstNonRepeat()}
           >

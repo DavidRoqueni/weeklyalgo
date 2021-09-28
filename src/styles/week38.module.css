@@ -1,9 +1,12 @@
 .active {
-  color: red
+  background-color: #d63384
 }
 .relative {
     position: relative;
 }
 .minHeight{
     min-height: 20vh;
+}
+.activeKey {
+  color: #d63384
 }

@@ -38,12 +38,13 @@
 }
 
 .box {
-  background-color: beige;
+  background-color:  #6f42c1 ;
   margin-right: 8px;
   margin-top: 10px;
   text-align: center;
   font-size: 1.4em;
   font-weight: bold;
+  color: white;
 }
 .prompt {
   font-size: 1.2em;
@@ -60,4 +61,13 @@
 }
 .ml-5 {
   margin-left: 5px;
+}
+.array {
+  width: 80px;
+}
+.hidden {
+  display: none;
+}
+.text-large {
+  font-size: 1.4em;
 }
