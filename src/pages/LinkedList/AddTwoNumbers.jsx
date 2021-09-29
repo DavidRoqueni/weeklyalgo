@@ -1,126 +1,31 @@
-import { React, useState } from 'react';
-import { CopyBlock, dracula } from 'react-code-blocks';
-import * as styles from '../../styles/week38.module.css';
 import { ToggleButton, ToggleButtonGroup, Box } from '@mui/material';
+import { CopyBlock, dracula } from 'react-code-blocks';
+import { React, useState } from 'react';
 
-const Week38 = () => {
-  const [array, setArray] = useState(['a', 'a', 'c', 'd', 'c', 'e', 'e', 'g']);
-  const mapped = array.map((y) => "'" + y + "'");
-  const cppCode = {
-    code: `char findNonrepeator(char ar[], int size){
-        std::unordred_map<char, int> map;
-        for (n = 0; n < size; n++)
-        {
-            map[ar[n]] += 1;
-        }
-        for (n = 0; n < size; n++)
-        {
-            if (map[ar[n]] == 1) return ar[n];
-        }
-        return ' ';
- }`,
-    language: 'cpp',
-  };
+const AddTwoNumbers = () => {
   const pythonCode = {
-    code: `def firstNonReaptor(ar, size):
-      map = dict()
-      for x in ar:
-        if(x in map):
-          map[x] += 1
-        else:
-          map[x] = 1
-      for x in ar:
-        if(map[x] == 1):
-          return x
-      return ' '`,
+    code: `class Solution:
+        def addTwoNumbers(self, l1, l2 ,c = 0):
+            head = ListNode(0)
+            currentNode = head 
+            carry = 0
+            
+            while l1 or l2 or carry:
+                carry += l1.val if l1 else 0
+                carry += l2.val if l2 else 0
+                
+                carry, out = divmod(carry, 10)
+                currentNode.val = out
+                
+                l1 = l1.next if l1 else None
+                l2 = l2.next if l2 else None
+                if l1 != None or l2 != None or carry != 0:
+                    temp = ListNode(0)
+                    currentNode.next = temp
+                    currentNode = temp
+                
+            return head`,
     language: 'python',
-  };
-  const javaCode = {
-    code: `public char firstNonRepeator(char[] ar, int size){
-      Map<Character,Integer> map = new HashMap<Character,Integer>();
-      for(char i : ar)
-      {
-          map.merge(i, 1, (a,b) -> a+b);
-      }
-      for(char i : ar)
-      {
-          if(map.get(i) == 1) return i;
-      }
-      return ' ';
-}`,
-    language: 'java',
-  };
-  const [currentCode, setCurrentCode] = useState(cppCode);
-  const [currentCodeDisplay, setCurrentCodeDisplay] = useState('cpp');
-  const [currentIndex, setCurrentIndex] = useState(NaN);
-  const [currentKey, setCurrentKey] = useState(' ');
-  const [map, setMap] = useState({});
-  const [showMap, setShowMap] = useState(false);
-  const [running, setRunning] = useState(false);
-  const [displayError, setDisplayError] = useState(false);
-  let found = false;
-  const codeTypes = ['cpp', 'java', 'python'];
-  const handleArrayChange = (e, index) => {
-    if (!e.search(/[^a-zA-Z]+/)) {
-      return;
-    }
-    const temp = [...array];
-    temp[index] = e.toLowerCase();
-    setArray(temp);
-  };
-  const handleCodeChange = (event, newCode) => {
-    if (newCode === 'java') {
-      setCurrentCode(javaCode);
-      setCurrentCodeDisplay('java');
-    }
-    if (newCode === 'cpp') {
-      setCurrentCode(cppCode);
-      setCurrentCodeDisplay('cpp');
-    }
-    if (newCode === 'python') {
-      setCurrentCode(pythonCode);
-      setCurrentCodeDisplay('python');
-    }
-  };
-  const firstNonRepeat = function () {
-    const temp = {};
-    setDisplayError(false);
-    setRunning(true);
-    setCurrentKey(-1);
-    const loopArray = array.map((y) => (y === '' ? 'a' : y));
-    if (array.includes('')) {
-      setArray(loopArray);
-    }
-    for (let i = 0; i < loopArray.length; i++) {
-      setTimeout(() => {
-        if (loopArray[i] in temp) temp[loopArray[i]]++;
-        else temp[loopArray[i]] = 1;
-        setMap(temp);
-        setCurrentIndex(i);
-        setCurrentKey(loopArray[i]);
-      }, 2000 * i);
-    }
-    setTimeout(() => {
-      for (let j = 0; j < loopArray.length; j++) {
-        // eslint-disable-next-line no-loop-func
-        setTimeout(() => {
-          if (!found) {
-            setCurrentIndex(j);
-            setCurrentKey(loopArray[j]);
-          }
-          if (temp[loopArray[j]] === 1) {
-            setRunning(false);
-            found = true;
-            return loopArray[j];
-          }
-          if (j === loopArray.length - 1) {
-            setRunning(false);
-            setDisplayError(true);
-            setCurrentKey('1');
-          }
-        }, 2000 * j);
-      }
-    }, 2000 * array.length + 20);
   };
   return (
     <div className='container main'>
@@ -135,9 +40,10 @@ const Week38 = () => {
         <h2 className='col'>Sample Input</h2>
         <h2 className='col'>Sample Output</h2>
       </div>
+      {/* Sample input and output  */}
       <div className='row'>
-        <h4 className='col sample'>[{mapped.toString()}]</h4>
-        <h4 className='col '>d</h4>
+        {/* <h4 className='col sample'>[{mapped.toString()}]</h4>
+        <h4 className='col '>d</h4> */}
       </div>
       <h1 className='mt-40'>Solution</h1>
       <div className='prompt'>
@@ -182,7 +88,7 @@ const Week38 = () => {
           theme={dracula}
         />
       </div>
-      <h1 className='mt-40'>How It Works</h1>
+      {/*<h1 className='mt-40'>How It Works</h1>
       {showMap ? (
         <div className={styles.minHeight}>
           <h4 className='mt-10'>Array</h4>
@@ -249,9 +155,9 @@ const Week38 = () => {
         >
           Show Me
         </button>
-      )}
+      )} */}
     </div>
   );
 };
 
-export default Week38;
+export default AddTwoNumbers;

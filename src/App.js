@@ -1,30 +1,21 @@
 import './App.css';
 import React from 'react';
-import useState from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Week38 from './pages/2021/Week38';
 import Home from './pages/Home';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {
-  AppBar,
-  CssBaseline,
-  Toolbar,
-  Typography,
-  Box,
-  IconButton,
-} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import Box from '@mui/material/Box';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import SideNav from './components/SideNav';
+import AddTwoNumbers from './pages/LinkedList/AddTwoNumbers';
+import FirstNonrepeat from './pages/Arrays/FirstNonrepeat';
 
-//TODO: https://mui.com/components/drawers/
 export default function App() {
   const theme = createTheme({
     palette: {
@@ -42,38 +33,62 @@ export default function App() {
     },
     spacing: 8,
   });
+  const [openDraw, setOpenDraw] = useState(false);
+  const toggleDraw = (e) => {
+    setOpenDraw(e);
+  };
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position='static'>
-          <Toolbar>
-            <IconButton
-              size='large'
-              edge='start'
-              color='inherit'
-              aria-label='menu'
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-              News
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box>
-      <CssBaseline />
-      <AppBar />
-      <Router>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <Box sx={{ flexGrow: 1, marginBottom: '20px' }}>
+          <AppBar position='static'>
+            <Toolbar>
+              <IconButton
+                size='large'
+                edge='start'
+                color='inherit'
+                aria-label='menu'
+                sx={{ mr: 2 }}
+                onClick={() => {
+                  setOpenDraw(true);
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{ cursor: 'pointer' }}
+                onClick={() => {
+                  window.location.href = '/home';
+                }}
+              >
+                Weekly Algo
+              </Typography>
+            </Toolbar>
+          </AppBar>
+        </Box>
+        <CssBaseline />
+        <AppBar />
+        <Drawer
+          anchor={'left'}
+          open={openDraw}
+          onClose={() => setOpenDraw(false)}
+        >
+          <SideNav toggle={toggleDraw} />
+        </Drawer>
         <Switch>
-          <Route path='/2021/nov20-26'>
-            <Week38 />
+          <Route path='/nonrepeat'>
+            <FirstNonrepeat />
+          </Route>
+          <Route path='/addtwo'>
+            <AddTwoNumbers />
           </Route>
           <Route path='*'>
             <Home />
           </Route>
         </Switch>
-      </Router>
-    </ThemeProvider>
+      </ThemeProvider>
+    </Router>
   );
 }
